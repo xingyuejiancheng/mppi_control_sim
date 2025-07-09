@@ -1,0 +1,81 @@
+<launch>
+  <!-- 设置仿真参数 -->
+  <arg name="use_rviz" default="true"/>
+  
+  <!-- 设置MPPI参数 -->
+  <arg name="horizon" default="20"/>
+  <arg name="sample_count" default="1000"/>
+  <arg name="control_rate" default="10"/>
+  
+  <!-- 设置路径规划参数 -->
+  <arg name="path_resolution" default="0.1"/>
+  <arg name="safety_margin" default="0.5"/>
+  
+  <!-- 设置地图参数 -->
+  <arg name="map_width" default="50.0"/>
+  <arg name="map_height" default="50.0"/>
+  <arg name="map_resolution" default="0.1"/>
+  
+  <!-- 启动代价地图管理器 -->
+  <node name="costmap_manager" pkg="ackermann_navigation" type="costmap_manager" output="screen">
+    <param name="map_width" value="$(arg map_width)" />
+    <param name="map_height" value="$(arg map_height)" />
+    <param name="map_resolution" value="$(arg map_resolution)" />
+    <param name="map_origin_x" value="-25.0" />
+    <param name="map_origin_y" value="-25.0" />
+  </node>
+  
+  <!-- 启动路径规划器 -->
+  <node name="path_planner" pkg="ackermann_navigation" type="path_planner" output="screen">
+    <param name="path_resolution" value="$(arg path_resolution)" />
+    <param name="max_curvature" value="0.5" />
+    <param name="vehicle_width" value="1.0" />
+    <param name="vehicle_length" value="2.0" />
+    <param name="safety_margin" value="$(arg safety_margin)" />
+    <param name="bezier_order" value="3" />
+  </node>
+  
+  <!-- 启动MPPI控制器 -->
+  <node name="mppi_controller" pkg="ackermann_navigation" type="mppi_controller" output="screen">
+    <!-- MPPI参数 -->
+    <param name="horizon" value="$(arg horizon)" />
+    <param name="sample_count" value="$(arg sample_count)" />
+    <param name="dt" value="0.1" />
+    <param name="lambda" value="0.1" />
+    <param name="noise_std_v" value="0.5" />
+    <param name="noise_std_delta" value="0.1" />
+    <param name="temperature" value="1.0" />
+    
+    <!-- 车辆参数 -->
+    <param name="wheelbase" value="1.6" />
+    <param name="max_velocity" value="5.0" />
+    <param name="min_velocity" value="0.5" />
+    <param name="max_steering" value="0.5" />
+    <param name="max_steering_rate" value="1.0" />
+    
+    <!-- 代价函数权重 -->
+    <param name="w_path" value="1.0" />
+    <param name="w_obstacle" value="10.0" />
+    <param name="w_control" value="0.1" />
+    <param name="w_velocity" value="0.5" />
+    
+    <!-- 话题重映射 -->
+    <remap from="/ackermann/odom" to="/odom" />
+    <remap from="/cmd_vel" to="/ackermann/cmd_vel" />
+  </node>
+  
+  <!-- 启动RViz可视化 -->
+  <group if="$(arg use_rviz)">
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ackermann_navigation)/config/navigation.rviz" />
+  </group>
+  
+  <!-- 启动TF静态变换 -->
+  <node pkg="tf" type="static_transform_publisher" name="map_to_odom" 
+        args="0 0 0 0 0 0 map odom 100" />
+  
+  <!-- 启动模拟里程计发布器 -->
+  <node name="fake_odom" pkg="ackermann_navigation" type="fake_odom_publisher" output="screen">
+    <param name="publish_rate" value="50" />
+  </node>
+  
+</launch>

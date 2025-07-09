@@ -1,0 +1,34 @@
+mppi_controller:
+  # 基本参数
+  horizon: 20                # 预测步长（降低以加快响应）
+  num_samples: 1500         # 采样数量（适当降低以加快计算）
+  dt: 0.1                   # 时间步长
+  
+  # 车辆参数
+  wheelbase: 1.0            # 轴距
+  max_velocity: 0.8         # 最大速度（大幅降低）
+  min_velocity: 0.3         # 最小速度（降低）
+  max_steering: 0.4         # 最大转向角（降低以提高稳定性）
+  max_steering_rate: 0.3    # 最大转向角速率（降低以避免剧烈转向）
+  
+  # 控制器参数
+  velocity_noise: 0.05      # 速度采样噪声（降低）
+  steering_noise: 0.01      # 转向采样噪声（降低）
+  temperature: 0.2          # 温度参数（降低以更倾向于选择最优解）
+  time_decay: 0.3          # 时间衰减因子（增加以更注重近期预测）
+  
+  # 代价权重
+  lateral_weight: 4.0       # 横向误差权重（增加）
+  yaw_weight: 3.0          # 朝向误差权重（增加）
+  distance_weight: 2.0      # 距离权重（增加）
+  control_weight: 0.3       # 控制平滑权重（增加）
+  steering_weight: 4.0      # 转向变化权重（增加）
+  goal_weight: 2.0         # 目标吸引权重（新增）
+  
+  # 控制平滑
+  smoothing_factor: 0.15    # 控制平滑因子（降低以减少振荡）
+  
+  # 新增参数
+  goal_tolerance: 0.5       # 目标达到容差（米）
+  yaw_tolerance: 0.2        # 航向容差（弧度）
+  lookahead_distance: 1.0   # 前视距离（米） 

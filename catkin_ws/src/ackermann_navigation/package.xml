@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <name>ackermann_navigation</name>
+  <version>0.1.0</version>
+  <description>ROS1 navigation simulation with Ackermann steering model and MPPI control</description>
+  <maintainer email="user@example.com">user</maintainer>
+  <license>Apache 2.0</license>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <build_depend>roscpp</build_depend>
+  <run_depend>roscpp</run_depend>
+  
+  <build_depend>tf</build_depend>
+  <run_depend>tf</run_depend>
+  
+  <build_depend>nav_msgs</build_depend>
+  <run_depend>nav_msgs</run_depend>
+  
+  <build_depend>geometry_msgs</build_depend>
+  <run_depend>geometry_msgs</run_depend>
+  
+  <build_depend>visualization_msgs</build_depend>
+  <run_depend>visualization_msgs</run_depend>
+  
+  <export>
+  </export>
+</package>
